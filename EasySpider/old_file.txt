@@ -1,0 +1,33 @@
+# /usr/bin/evn python
+# encoding:utf-8
+
+'''
+传入一个csv文件，根据csv文件绘图
+设置异常处理
+'''
+import pandas as pd
+
+class DrawingDict:
+    def __init__(self, csv_path):
+        ''' 初始化csv文件路径 '''
+        try:
+            self.csv_file = pd.read_csv(csv_path)
+        except Exception as err:
+            print "drawung.py : %s" % err
+        
+    def __proc_csv(self, key, ascdStat=False, endInd=5):
+        ''' 传入一个处理关键字，默认情况是降序排列，默认x轴标签个数为5 '''
+        self.get_info = self.csv_file.sort_value(key, ascending=ascdStat)[:endInd] 
+    
+    def drawing(self, key, ascdStat=False, endInd=5, MyStyle='default', *args):
+        self.__proc_csv(key, ascdStat, endInd)
+
+        pd.options.display.my_style = 'default'
+        data_plot = self.get_info.plot(kind='bar',x=self.get_info['Word'],\
+                                       title='Word Count Table', legend=False)
+        fig = data_plot.get_figure()
+        fig.savefig("/home/zgx/文档/GitHub/DataAnalysisTraining/img.png")
+
+if __name__ == "__main__":
+    dd = DrawingDict("/home/zgx/文档/GitHub/DataAnalysisTraining/data2.csv")
+    dd.drawing("Count", endInd=3)
